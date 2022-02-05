@@ -1,0 +1,5532 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Builder API",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://bldr.habitat.sh/v1",
+      "variables": {
+        "rootUri": {
+          "default": "rootUri"
+        },
+        "version": {
+          "default": "version"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          },
+          "500": {
+            "description": "Server fault"
+          },
+          "503": {
+            "description": "Service temporarily unavailable"
+          }
+        },
+        "description": "Returns the health of the service",
+        "operationId": "GET_status"
+      },
+      "head": {
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          },
+          "500": {
+            "description": "Server fault"
+          },
+          "503": {
+            "description": "Service temporarily unavailable"
+          }
+        },
+        "operationId": "HEAD_status"
+      }
+    },
+    "/ext/installations/{install_id}/repos/{repo_id}/contents/{path}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Get content from github",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/content"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad search query parameter provided"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "operationId": "GET_ext-installations-install_id-repos-repo_id-contents-path"
+      },
+      "parameters": [
+        {
+          "name": "path",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "repo_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "install_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/ext/integrations/{registry_type}/credentials/validate": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Registry credentials validated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        },
+        "description": "Validates registry credentials",
+        "operationId": "POST_ext-integrations-registry_type-credentials-validate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "user": "user",
+                "password": "password",
+                "url": "url"
+              },
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        }
+      },
+      "parameters": [
+        {
+          "name": "registry_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/profile": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved profile",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "1234567890",
+                  "name": "jimmy",
+                  "email": "jimmy@example.com"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/userProfile"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        },
+        "description": "Retrieve your profile",
+        "operationId": "GET_profile",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "patch": {
+        "responses": {
+          "200": {
+            "description": "Update successful"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "422": {
+            "description": "Bad JSON submitted"
+          }
+        },
+        "description": "Update your profile",
+        "operationId": "PATCH_profile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "jimmy@example.com"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/userProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/profile/access-tokens": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved tokens",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "account_id": 2,
+                    "token": "abcdefg",
+                    "created_at": "2022-01-29 09:42:15.273364+00"
+                  },
+                  {
+                    "id": 3,
+                    "account_id": 21,
+                    "token": "abcdefgihijk",
+                    "created_at": "2022-01-31 09:42:15.273364+00"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/accountTokens"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        },
+        "description": "Retrieve your personal access tokens",
+        "operationId": "GET_profile-access-tokens",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Generated personal access token"
+          },
+          "400": {
+            "description": "Received a malformed JSON body"
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        },
+        "description": "Generate a new personal access token",
+        "operationId": "POST_profile-access-tokens",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/profile/access-tokens/{id}": {
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Delete successful"
+          },
+          "401": {
+            "description": "Authentication failed"
+          }
+        },
+        "description": "Delete (revoke) a personal access token",
+        "operationId": "DELETE_profile-access-tokens-id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/jobs/{jobId}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved job status",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "73089155726360582",
+                  "origin": "core",
+                  "project": "nginx",
+                  "version": "1.0.0",
+                  "release": "20170505001756",
+                  "state": "Complete",
+                  "created_at": "2017-05-05 00:42:35.213765+00",
+                  "build_started_at": "2017-05-05 00:43:11.729835+00",
+                  "build_finished_at": "2017-05-05 00:44:00.896919+00"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/job"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Received a jobId that was not a number"
+          }
+        },
+        "description": "Get the status of the given job",
+        "operationId": "GET_jobs-jobId"
+      },
+      "parameters": [
+        {
+          "name": "jobId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/jobs/{jobId}/log": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved build log",
+            "content": {
+              "application/json": {
+                "example": {
+                  "start": 0,
+                  "stop": 2,
+                  "content": [
+                    "this is the first line",
+                    "this is the second line"
+                  ],
+                  "is_complete": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/jobLog"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Received a jobId that was not a number, or\nan invalid value for the `start` query\nparameter (e.g., negative, or larger than\nthe actual size of the log file.\n"
+          },
+          "404": {
+            "description": "Job does not exist with corresponding jobId,\nor no log was found for the given job.\n"
+          }
+        },
+        "description": "Get the build log (or a portion thereof) for the\ngiven job. Until an SSE endpoint can be implemented,\nthis endpoint can be used to poll for the logs of a\ncurrently-running job; use of the `start` query\nparameter ensures that only the portion of the log\nthat is \"new\", relative to a prior request, will be\nretrieved.\n",
+        "operationId": "GET_jobs-jobId-log",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Return the portion of the log output that\nstarts at the zero-indexed line\nspecified. A request with no given value\ndefaults to `0`; in other words, the\nentire log will be sent back.\n",
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "color",
+            "in": "query",
+            "description": "Whether or not to include embedded ANSI color\ncodes in the log output. By default, all ANSI\nsequences are removed, yielding plain output.\n\nThe following values are interpreted as `true`:\n  * `true`\n  * `TRUE`\n  * `t`\n  * `T`\n  * `1`\n  * `on`\n  * `ON`\n\nThe following values are interpreted as `false`:\n  * `false`\n  * `FALSE`\n  * `f`\n  * `F`\n  * `0`\n  * `off`\n  * `OFF`\n\nAll other values are considered `false`.\n",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "jobId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/jobs/group/{id}/cancel": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "ID or channel not provided"
+          },
+          "404": {
+            "description": "Group not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Cancels a job group",
+        "operationId": "POST_jobs-group-id-cancel"
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/jobs/group/{id}/rebuild": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "ID or channel not provided"
+          },
+          "404": {
+            "description": "Group not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Rebuilds a job group",
+        "operationId": "POST_jobs-group-id-rebuild"
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/jobs/group/{id}/promote/{channel}": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Successful promotion"
+          },
+          "400": {
+            "description": "ID or channel not provided"
+          },
+          "404": {
+            "description": "Group not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Promote every successful project in a job group to the specified channel",
+        "operationId": "POST_jobs-group-id-promote-channel"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/jobs/group/{id}/demote/{channel}": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Successful demotion"
+          },
+          "400": {
+            "description": "ID or channel not provided"
+          },
+          "404": {
+            "description": "Group not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Demote every successful project in a job group to the specified channel",
+        "operationId": "POST_jobs-group-id-demote-channel"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/user/invitations": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved invitations",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "origin": "core",
+                  "account_id": 1,
+                  "account_name": "hab",
+                  "owner_id": 1331,
+                  "ignored": false
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/originInvitation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get invitations for the specified user",
+        "operationId": "GET_user-invitations",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/user/origins": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved origins",
+            "content": {
+              "application/json": {
+                "example": [
+                  "origin1",
+                  "origin2"
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/stringList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get origins for the specified user",
+        "operationId": "GET_user-origins",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/projects": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "habitat/builder-api",
+                  "plan_path": "components/builder-api/plan.sh",
+                  "vcs": {
+                    "type": "git",
+                    "url": "https://github.com/habitat-sh/habitat.git"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/project"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Received a malformed JSON body"
+          },
+          "409": {
+            "description": "This project already exists"
+          },
+          "422": {
+            "description": "The request body contained missing or invalid values or the file at the given\nlocation was unreadable or did not contain a valid plan.\n"
+          }
+        },
+        "description": "Creates a new project for building a Habitat plan scoped to the given origin. The\nresulting project will be created with an identifier containing the origin and name\nof the project the plan is building separated by a forward slash (i.e. `core/nginx`).\n",
+        "operationId": "POST_projects",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "origin": "core",
+                "plan_path": "components/builder-api/plan.sh",
+                "installation_id": 1234,
+                "repo_id": 4567
+              },
+              "schema": {
+                "$ref": "#/components/schemas/projectCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/projects/{origin}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved project names",
+            "content": {
+              "application/json": {
+                "example": [
+                  "foo",
+                  "bar",
+                  "baz"
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/stringList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get the list of project names for the specified origin",
+        "operationId": "GET_projects-origin"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/projects/{origin}/{name}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved project",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "habitat/builder-api",
+                  "plan_path": "components/builder-api/plan.sh",
+                  "vcs": {
+                    "type": "git",
+                    "url": "https://github.com/habitat-sh/habitat.git"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/project"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Return the project matching the given ID",
+        "operationId": "GET_projects-origin-name"
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "Project updated successfully"
+          },
+          "400": {
+            "description": "Received a malformed JSON body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "422": {
+            "description": "The request body contained missing or invalid values or the file at the\ngiven location was unreadable, did not contain a valid plan, or the name\nof the package it builds does not match the projectId's `name`\n"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Update the project matching the given ID",
+        "operationId": "PUT_projects-origin-name",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "plan_path": "components/builder-api/plan.sh",
+                "github": {
+                  "organization": "habitat-sh",
+                  "repo": "habitat"
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/project"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Project deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Destroys the project matching the given ID",
+        "operationId": "DELETE_projects-origin-name",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/projects/{origin}/{name}/{visibility}": {
+      "patch": {
+        "responses": {
+          "204": {
+            "description": "Visibility settings toggled successfully"
+          },
+          "400": {
+            "description": "Missing origin, name, visibility. Visibility other than public or private submitted."
+          },
+          "403": {
+            "description": "Not authorized to modify this origin"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Toggle the visibility settings on a project. Public projects that are made\nprivate will change to hidden instead. Changes made to a project's\nvisibility settings will cascade to its packages.\n",
+        "operationId": "PATCH_projects-origin-name-visibility"
+      },
+      "parameters": [
+        {
+          "name": "visibility",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/projects/{origin}/{name}/jobs": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved recently started jobs",
+            "content": {
+              "application/json": {
+                "example": {
+                  "range_start": 0,
+                  "range_end": 5,
+                  "total_count": 6,
+                  "data": [
+                    {
+                      "id": "73089155726360582",
+                      "origin": "core",
+                      "project": "nginx",
+                      "version": "1.0.0",
+                      "release": "20170505001756",
+                      "state": "Complete",
+                      "created_at": "2017-05-05 00:42:35.213765+00",
+                      "build_started_at": "2017-05-05 00:43:11.729835+00",
+                      "build_finished_at": "2017-05-05 00:44:00.896919+00"
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/jobs"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        },
+        "description": "Retrieve the most recently started jobs for the given project.",
+        "operationId": "GET_projects-origin-name-jobs"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/projects/{origin}/{name}/integrations/{integration}/default": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved integration",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "project_id": 121,
+                  "integration_id": 14641,
+                  "origin": "core",
+                  "body": "NoContent",
+                  "created_at": "2017-05-05 00:43:11.729835+00"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/projectIntegration"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Integration not found"
+          }
+        },
+        "description": "Get the specified integration",
+        "operationId": "GET_projects-origin-name-integrations-integration-default"
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "Integration created"
+          },
+          "400": {
+            "description": "Error parsing integration"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "description": "Creates a project integration",
+        "operationId": "PUT_projects-origin-name-integrations-integration-default"
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Integration deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "description": "Deletes an integration",
+        "operationId": "DELETE_projects-origin-name-integrations-integration-default"
+      },
+      "parameters": [
+        {
+          "name": "integration",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Created origin",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1965,
+                  "name": "core",
+                  "owner_id": 3861225,
+                  "default_package_visibility": "Public"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/origin"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Origin already exists"
+          },
+          "417": {
+            "description": "Expectation failed"
+          },
+          "422": {
+            "description": "Malformed origin in request body"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Create a new origin",
+        "operationId": "POST_depot-origins",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "reset",
+                "owner_id": 1965
+              },
+              "schema": {
+                "$ref": "#/components/schemas/origin"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/depot/origins/{origin}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Origin retrieved",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1965,
+                  "name": "test",
+                  "owner_id": 1965,
+                  "default_package_visibility": "Public"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/origin"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Origin not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get origin",
+        "operationId": "GET_depot-origins-origin"
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "Origin updated"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Update existing origin",
+        "operationId": "PUT_depot-origins-origin"
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Origin deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Delete an origin",
+        "operationId": "DELETE_depot-origins-origin"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/users": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved origin members",
+            "content": {
+              "application/json": {
+                "example": {
+                  "origin": "core",
+                  "members": [
+                    "glibc",
+                    "cmake"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/originMemberList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List all members of an origin",
+        "operationId": "GET_depot-origins-origin-users"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/users/{user}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Member deleted from origin"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Must be owner of origin to delete"
+          },
+          "422": {
+            "description": "Cannot remove owner with existing origins"
+          }
+        },
+        "description": "Delete origin member",
+        "operationId": "DELETE_depot-origins-origin-users-user",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/users/{user}/role": {
+      "put": {
+        "responses": {
+          "204": {
+            "description": "Member role updated"
+          },
+          "403": {
+            "description": "Unauthorized to perform this action"
+          },
+          "404": {
+            "description": "Invalid origin or username given"
+          },
+          "422": {
+            "description": "Origin member parse error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Update an origin member's role",
+        "operationId": "PUT_depot-origins-origin-users-user-role",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved origin member role",
+            "content": {
+              "application/json": {
+                "example": {
+                  "role": "administrator"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/memberRole"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Retrieve an origin member's role",
+        "operationId": "GET_depot-origins-origin-users-user-role",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/users/{user}/invitations": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Invitation created successfully"
+          },
+          "204": {
+            "description": "Invitation creation request received"
+          },
+          "400": {
+            "description": "No origin or username given"
+          },
+          "401": {
+            "description": "You are not authorized to send invitations on behalf of this origin"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Create an invitation to this origin for this user",
+        "operationId": "POST_depot-origins-origin-users-user-invitations",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/transfer/{user}": {
+      "post": {
+        "responses": {
+          "204": {
+            "description": "Transfer successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Not authorized to transfer ownership"
+          },
+          "422": {
+            "description": "Cannot transfer to self or non-members"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Transfer ownership of origin to new origin member",
+        "operationId": "POST_depot-origins-origin-transfer-user",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "user",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/depart": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Origin member departed"
+          },
+          "400": {
+            "description": "Invalid origin or name"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Origin owner cannot depart origin"
+          },
+          "422": {
+            "description": "User is not a member of the specified origin"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Leave an origin you no longer wish to be a member of",
+        "operationId": "POST_depot-origins-origin-depart",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/invitations": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved invitations for origin",
+            "content": {
+              "application/json": {
+                "example": {
+                  "origin": "test",
+                  "invitations": [
+                    {
+                      "id": 1,
+                      "origin": "test",
+                      "account_id": 411,
+                      "account_name": "test",
+                      "owner_id": 144,
+                      "ignored": false
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/originInvitationList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Return list of invitations for the specified origin",
+        "operationId": "GET_depot-origins-origin-invitations",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/keys": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved key revisions",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "origin": "core",
+                    "revision": "20160423193732",
+                    "location": "/origins/core/keys/20160423193732"
+                  },
+                  {
+                    "origin": "core",
+                    "revision": "20160423193733",
+                    "location": "/origins/core/keys/20160423193733"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/originKeys"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Return a list of key revisions for an organization",
+        "operationId": "GET_depot-origins-origin-keys",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "New keys created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Create a new set of keys",
+        "operationId": "POST_depot-origins-origin-keys"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/keys/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Downloaded latest origin key",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "example": "Jpmj1gD9oTFCgz3wSLltt/QB6RTmNRWoUTe+xhDTIHc=",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Download latest origin key",
+        "operationId": "GET_depot-origins-origin-keys-latest",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/keys/{revision}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Downloaded key revision for origin",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "example": "SIG-PUB-1\ncore-20160423193745\nJpmj1gD9oTFCgz3wSLltt/QB6RTmNRWoUTe+xhDTIHc=\n",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Download a key revision for a specific origin",
+        "operationId": "GET_depot-origins-origin-keys-revision",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Key successfully uploaded"
+          },
+          "403": {
+            "description": "Authenticated user not a member of the given origin"
+          },
+          "409": {
+            "description": "Key already exists in origin"
+          },
+          "422": {
+            "description": "Invalid key content"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Upload a new key revision for an origin",
+        "operationId": "POST_depot-origins-origin-keys-revision",
+        "requestBody": {
+          "content": {
+            "text/plain": {
+              "example": "SIG-PUB-1\ncore-20160423193745\n\nJpmj1gD9oTFCgz3wSLltt/QB6RTmNRWoUTe+xhDTIHc=\n",
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "revision",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/encryption_key": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Key downloaded",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "example": "Jpmj1gD9oTFCgz3wSLltt/QB6RTmNRWoUTe+xhDTIHc=\n"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "description": "Download public encryption key for origin responses",
+        "operationId": "GET_depot-origins-origin-encryption_key"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/secret": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Key deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Missing field or payload decryption error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Upload a secret payload body",
+        "operationId": "POST_depot-origins-origin-secret"
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved secrets for origin",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "origin_id": 11,
+                    "name": "origin1",
+                    "value": "Jpmj1gD9oTFCgz3wSLltt/QB6RTmNRWoUTe+xhDTIHc="
+                  },
+                  {
+                    "id": 2,
+                    "origin_id": 12,
+                    "name": "origin2",
+                    "value": "Qpmj1gDxoTFCgz3wSL8nt!Qg9RTmsrroUTe+xhD8IHc="
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/originSecrets"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get a list of all secrets for the specified origin",
+        "operationId": "GET_depot-origins-origin-secret"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/secret/{secret}": {
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Key deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Delete a secret for an origin given a secret name",
+        "operationId": "DELETE_depot-origins-origin-secret-secret"
+      },
+      "parameters": [
+        {
+          "name": "secret",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/secret_keys/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved latest secret key",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "11",
+                  "origin_id": "121",
+                  "name": "core",
+                  "revision": "20210407112205",
+                  "body": "OK",
+                  "owner_id": "1331"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/secret_key"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Secret key already exists in origin"
+          }
+        },
+        "description": "Retrieve the latest secret key",
+        "operationId": "GET_depot-origins-origin-secret_keys-latest"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/secret_keys/{revision}": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Origin secret key uploaded"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invalid secret key content"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Upload origin secret key",
+        "operationId": "POST_depot-origins-origin-secret_keys-revision",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "revision",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/integrations": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved all integrations",
+            "content": {
+              "application/json": {
+                "example": {
+                  "names": [
+                    "integration1",
+                    "integration2"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/integrationList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "description": "Get an object of all integrations",
+        "operationId": "GET_depot-origins-origin-integrations",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/integrations/{integration}/names": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved integration names",
+            "content": {
+              "application/json": {
+                "example": {
+                  "names": [
+                    "integration1",
+                    "integration2"
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/integrationList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid origin"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get integrations for specified origin",
+        "operationId": "GET_depot-origins-origin-integrations-integration-names"
+      },
+      "parameters": [
+        {
+          "name": "integration",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/integrations/{integration}/{name}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved integration",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "origin": "test",
+                  "integration": "test",
+                  "name": "test",
+                  "body": "test"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/originIntegration"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid origin"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Encryption error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get integration for specified origin and name",
+        "operationId": "GET_depot-origins-origin-integrations-integration-name"
+      },
+      "put": {
+        "responses": {
+          "201": {
+            "description": "Integration created"
+          },
+          "400": {
+            "description": "Invalid origin or name"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Encryption error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Create integration for specified origin and name",
+        "operationId": "PUT_depot-origins-origin-integrations-integration-name"
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Integration deleted"
+          },
+          "400": {
+            "description": "Invalid origin or name"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Delete integration for specified origin and name",
+        "operationId": "DELETE_depot-origins-origin-integrations-integration-name"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "integration",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/invitations/{invitationId}": {
+      "put": {
+        "responses": {
+          "204": {
+            "description": "Accepted the invitation"
+          },
+          "400": {
+            "description": "No origin or invitation id given"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invitation parse error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Accept this invitation",
+        "operationId": "PUT_depot-origins-origin-invitations-invitationId",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Invitation rescinded"
+          },
+          "400": {
+            "description": "No origin or invitation id given"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invitation parse error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Rescind an invitation that hasn't already been ignored",
+        "operationId": "DELETE_depot-origins-origin-invitations-invitationId",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "invitationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/origins/{origin}/invitations/{invitationId}/ignore": {
+      "put": {
+        "responses": {
+          "204": {
+            "description": "Invitation ignored"
+          },
+          "400": {
+            "description": "No origin or invitation id given"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invitation parse error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Ignore this invitation",
+        "operationId": "PUT_depot-origins-origin-invitations-invitationId-ignore",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "invitationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Packages were found and fit on one page",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": 1,
+                      "owner_id": 2,
+                      "ident": {
+                        "origin": "core",
+                        "name": "redis"
+                      }
+                    },
+                    {
+                      "id": 2,
+                      "owner_id": 2,
+                      "ident": {
+                        "origin": "core",
+                        "name": "gcc"
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageList"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Packages were found and require pagination",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": 1,
+                      "owner_id": 2,
+                      "ident": {
+                        "origin": "core",
+                        "name": "redis"
+                      }
+                    },
+                    {
+                      "id": 2,
+                      "owner_id": 2,
+                      "ident": {
+                        "origin": "core",
+                        "name": "gcc"
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List packages for an origin",
+        "operationId": "GET_depot-pkgs-origin",
+        "parameters": [
+          {
+            "name": "distinct",
+            "in": "query",
+            "description": "Whether to show a distinct list of packages or not",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Packages were found and fit on one page",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": 1,
+                      "owner_id": 2,
+                      "ident": {
+                        "origin": "core",
+                        "name": "redis"
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageList"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Packages were found and require pagination",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "id": 1,
+                      "owner_id": 2,
+                      "ident": {
+                        "origin": "core",
+                        "name": "redis"
+                      }
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List packages for a specified origin and package name",
+        "operationId": "GET_depot-pkgs-origin-name"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/versions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved all package versions",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "origin": "core",
+                    "name": "redis",
+                    "version": "3.2.1",
+                    "release_count": 3,
+                    "latest": "20170215222111",
+                    "platforms": [
+                      "linux"
+                    ],
+                    "visibility": "Public"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/originPackageVersions"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Package versions were found and require pagination",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "origin": "core",
+                    "name": "redis",
+                    "version": "3.2.1",
+                    "release_count": 3,
+                    "latest": "20170215222111",
+                    "platforms": [
+                      "linux"
+                    ],
+                    "visibility": "Public"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/originPackageVersions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or package name not supplied"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Returns all versions and a count of releases for each version for a given package",
+        "operationId": "GET_depot-pkgs-origin-name-versions"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved latest package",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "owner_id": 2,
+                  "ident": {
+                    "origin": "core",
+                    "name": "redis"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/package"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get latest package for specified origin and package",
+        "operationId": "GET_depot-pkgs-origin-name-latest"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/{version}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved packages",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "origin": "core",
+                    "name": "redis",
+                    "version": "3.2.1",
+                    "release_count": 3,
+                    "latest": "20170215222111",
+                    "platforms": [
+                      "linux",
+                      "windows"
+                    ],
+                    "visibility": "Public"
+                  },
+                  {
+                    "origin": "core",
+                    "name": "bundler",
+                    "version": "1.0.1",
+                    "release_count": 4,
+                    "latest": "20210215222111",
+                    "platforms": [
+                      "linux"
+                    ],
+                    "visibility": "Private"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/originPackageVersions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin, package name, or version not supplied"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get packages with specified origin, package name, and version",
+        "operationId": "GET_depot-pkgs-origin-name-version"
+      },
+      "parameters": [
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/{version}/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved latest package",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "owner_id": 2,
+                  "ident": {
+                    "origin": "core",
+                    "name": "redis"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/package"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get latest package with specified origin, package name, and version",
+        "operationId": "GET_depot-pkgs-origin-name-version-latest"
+      },
+      "parameters": [
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/{version}/{release}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved package for specified origin, package name, version, and release",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "owner_id": 2,
+                  "ident": {
+                    "origin": "core",
+                    "name": "redis"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/package"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Gets package for specified origin, package name, version, and release",
+        "operationId": "GET_depot-pkgs-origin-name-version-release"
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Package uploaded"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Invalid package, target, or checksum"
+          },
+          "424": {
+            "description": "Has circular dependencies"
+          },
+          "500": {
+            "description": "Internal server error"
+          },
+          "501": {
+            "description": "Not implemented"
+          }
+        },
+        "description": "Uploads a package",
+        "operationId": "POST_depot-pkgs-origin-name-version-release"
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Package release deleted"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Could not complete process due to rdeps, channel, or target"
+          }
+        },
+        "operationId": "DELETE_depot-pkgs-origin-name-version-release"
+      },
+      "parameters": [
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/{version}/{release}/{visibility}": {
+      "patch": {
+        "responses": {
+          "200": {
+            "description": "Successfully changed"
+          },
+          "400": {
+            "description": "Missing origin or name or version or release or visibility. Visibility not \"public\" or \"private\"."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Unauthorized to change packages for this origin"
+          },
+          "404": {
+            "description": "Package not found"
+          },
+          "422": {
+            "description": "Could not complete process due to origin, name, or visibility"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Change the visibility of a package",
+        "operationId": "PATCH_depot-pkgs-origin-name-version-release-visibility"
+      },
+      "parameters": [
+        {
+          "name": "visibility",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/{version}/{release}/download": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Package downloaded"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Package not found"
+          },
+          "422": {
+            "description": "Could not complete process due to invalid target"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Downloads the package with specified origin, name, version, and release",
+        "operationId": "GET_depot-pkgs-origin-name-version-release-download"
+      },
+      "parameters": [
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/{origin}/{name}/{version}/{release}/channels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved channel list",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "channel": "stable",
+                    "created_at": "2020-12-28T20:24:49.588691",
+                    "promoted_at": "2020-12-28T20:24:49.588691"
+                  },
+                  {
+                    "channel": "unstable",
+                    "created_at": "2021-12-28T20:24:49.588691",
+                    "promoted_at": "2021-12-28T20:24:49.588691"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/channelWithPromotionList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Could not complete process due to invalid identifier or target"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Gets list of channels for this origin, package name, version, and release",
+        "operationId": "GET_depot-pkgs-origin-name-version-release-channels"
+      },
+      "parameters": [
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/search/{query}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Packages were found and fit on one page",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "origin": "core",
+                      "name": "redis"
+                    },
+                    {
+                      "origin": "core",
+                      "name": "node"
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageList"
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Packages were found and require pagination",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": [
+                    {
+                      "origin": "core",
+                      "name": "redis"
+                    },
+                    {
+                      "origin": "core",
+                      "name": "node"
+                    }
+                  ]
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Query parse error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Search for packages with a query string",
+        "operationId": "GET_depot-pkgs-search-query",
+        "parameters": [
+          {
+            "name": "distinct",
+            "in": "query",
+            "description": "Whether to show a distinct list of packages or not",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "query",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/schedule/{groupid}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1,
+                  "state": "active",
+                  "name": "jobsrv",
+                  "project": "sample",
+                  "target": "linux"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/jobGroup"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Group id parse error"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get schedule for specified group",
+        "operationId": "GET_depot-pkgs-schedule-groupid"
+      },
+      "parameters": [
+        {
+          "name": "groupid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/schedule/{origin}/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "state": "active",
+                    "name": "jobsrv",
+                    "project": "sample",
+                    "target": "linux"
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/jobGroups"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get origin schedule status",
+        "operationId": "GET_depot-pkgs-schedule-origin-status"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/pkgs/schedule/{origin}/{pkg}": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Scheduled"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Schedule a job group",
+        "operationId": "POST_depot-pkgs-schedule-origin-pkg"
+      },
+      "parameters": [
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/events": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved local builder events",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "range_start": 0,
+                    "range_end": 1,
+                    "total_count": 1,
+                    "data": [
+                      {
+                        "operation": "Promote"
+                      },
+                      {
+                        "origin": "core"
+                      },
+                      {
+                        "channel": "stable"
+                      },
+                      {
+                        "package_ident": [
+                          {
+                            "origin": "core"
+                          },
+                          {
+                            "name": "hab-backline"
+                          },
+                          {
+                            "version": "1.6.420"
+                          },
+                          {
+                            "release": 20211101174345
+                          }
+                        ]
+                      },
+                      {
+                        "created_at": "2021-12-28T20:24:49.588691"
+                      }
+                    ]
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/events"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Retrieved local builder events but requires pagination",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "range_start": 1,
+                    "range_end": 2,
+                    "total_count": 1,
+                    "data": [
+                      {
+                        "operation": "Promote"
+                      },
+                      {
+                        "origin": "core"
+                      },
+                      {
+                        "channel": "stable"
+                      },
+                      {
+                        "package_ident": [
+                          {
+                            "origin": "core"
+                          },
+                          {
+                            "name": "hab-zipline"
+                          },
+                          {
+                            "version": "1.6.420"
+                          },
+                          {
+                            "release": 20211101174345
+                          }
+                        ]
+                      },
+                      {
+                        "created_at": "2021-12-28T20:24:49.588691"
+                      }
+                    ]
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/events"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad search query parameter provided"
+          }
+        },
+        "description": "Get local builder events",
+        "operationId": "GET_depot-events",
+        "parameters": [
+          {
+            "name": "nextRange",
+            "in": "query",
+            "required": true,
+            "description": "Paginated index of next range to return",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": true,
+            "description": "From date to include in query results (inclusive)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "description": "To date to include in query results (inclusive)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Query parameters",
+            "schema": {
+              "default": "",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/depot/events/saas": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved SAAS builder events",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "range_start": 0,
+                    "range_end": 1,
+                    "total_count": 1,
+                    "data": [
+                      {
+                        "operation": "Promote"
+                      },
+                      {
+                        "origin": "core"
+                      },
+                      {
+                        "channel": "stable"
+                      },
+                      {
+                        "package_ident": [
+                          {
+                            "origin": "core"
+                          },
+                          {
+                            "name": "hab-backline"
+                          },
+                          {
+                            "version": "1.6.420"
+                          },
+                          {
+                            "release": 20211101174345
+                          }
+                        ]
+                      },
+                      {
+                        "created_at": "2021-12-28T20:24:49.588691"
+                      }
+                    ]
+                  }
+                ],
+                "schema": {
+                  "$ref": "#/components/schemas/events"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Retrieved SAAS builder events but requires pagination application/json"
+          },
+          "400": {
+            "description": "Bad search query parameter provided"
+          }
+        },
+        "description": "Get SAAS builder events",
+        "operationId": "GET_depot-events-saas",
+        "parameters": [
+          {
+            "name": "nextRange",
+            "in": "query",
+            "required": true,
+            "description": "Paginated index of next range to return",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": true,
+            "description": "From date to include in query results (inclusive)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "description": "To date to include in query results (inclusive)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Query parameters",
+            "schema": {
+              "default": "",
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/notify": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "400": {
+            "description": "Invalid parameter provided"
+          }
+        },
+        "description": "Notification of github events [ping, push]",
+        "operationId": "POST_notify",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/authenticate/{code}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Authorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "73089155726360582",
+                  "name": "reset",
+                  "email": "reset@chef.io",
+                  "token": "0b79bab50daca910b000d4f1a2b675d604257e42",
+                  "flags": 0,
+                  "oauth_token": "bb79bab50dbcab10b000d4f1a2bb75d604257e42"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/session"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "operationId": "GET_authenticate-code"
+      },
+      "parameters": [
+        {
+          "name": "code",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/rdeps/{origin}/{name}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieve reverse dependencies for package",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "origin": "core",
+                    "name": "linux-headers",
+                    "rdeps": [
+                      "core/redis"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Package not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Retrieves the list of reverse dependencies for this package.\n",
+        "operationId": "GET_rdeps-origin-name"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/rdeps/{origin}/{name}/group": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved dependencies organized into build groups",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "origin": "core",
+                    "name": "linux-headers",
+                    "rdeps": [
+                      {
+                        "group": 0,
+                        "idents": [
+                          "core/redis",
+                          "core/protobuf"
+                        ]
+                      },
+                      {
+                        "group": 1,
+                        "idents": [
+                          "core/node"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Package not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Retrieves the list of reverse dependencies for this package,\ncollated into build groups that can be build in parallel\n",
+        "operationId": "GET_rdeps-origin-name-group"
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved channels for origin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": [
+                    {
+                      "name": "stable"
+                    },
+                    {
+                      "name": "unstable"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin not specified"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List all channels for an origin",
+        "operationId": "GET_depot-channels-origin"
+      },
+      "parameters": [
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Channel successfully created"
+          },
+          "400": {
+            "description": "Origin or channel not supplied"
+          },
+          "404": {
+            "description": "Origin does not exist"
+          },
+          "409": {
+            "description": "Channel already exists"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Create a channel",
+        "operationId": "POST_depot-channels-origin-channel"
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Channel successfully deleted"
+          },
+          "400": {
+            "description": "Origin or channel not supplied"
+          },
+          "403": {
+            "description": "Channel can not be deleted"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Deletes a channel",
+        "operationId": "DELETE_depot-channels-origin-channel"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Returns a list of packages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "range_start": 0,
+                    "range_end": 49,
+                    "total_count": 8,
+                    "data": [
+                      {
+                        "origin": "core",
+                        "name": "glibc",
+                        "version": "2.22",
+                        "release": "20160612063629"
+                      },
+                      {
+                        "origin": "core",
+                        "name": "linux-headers",
+                        "version": "4.3",
+                        "release": "20160612063537"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or channel not supplied"
+          },
+          "404": {
+            "description": "Origin or channel does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List all packages in a channel",
+        "operationId": "GET_depot-channels-origin-channel-pkgs"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/_latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Returns a list of packages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "channel": "stable",
+                    "target": "x86_64-linux",
+                    "data": [
+                      {
+                        "origin": "core",
+                        "name": "glibc",
+                        "version": "2.22",
+                        "release": "20160612063629"
+                      },
+                      {
+                        "origin": "core",
+                        "name": "linux-headers",
+                        "version": "4.3",
+                        "release": "20160612063537"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List latest packages in a channel, by target (required)",
+        "operationId": "GET_depot-channels-origin-channel-pkgs-_latest"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/promote": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Packages successfully promoted"
+          },
+          "400": {
+            "description": "Forbidden packages/Badly formed request for promotion"
+          },
+          "401": {
+            "description": "You are not authorized to request promotion for this origin"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Promotes all packages in a channel queryParameters",
+        "operationId": "POST_depot-channels-origin-channel-pkgs-promote"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/demote": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Packages successfully demoted"
+          },
+          "400": {
+            "description": "Forbidden packages/Badly formed request for demotion"
+          },
+          "401": {
+            "description": "You are not authorized to request demotion for this origin"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Demotes list of packages from a channel queryParameters",
+        "operationId": "POST_depot-channels-origin-channel-pkgs-demote"
+      },
+      "parameters": [
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved a complete list of packages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdentList"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Retrieved list of packages - pagination required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdentList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or channel not supplied"
+          },
+          "404": {
+            "description": "Origin or channel does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List all packages in a channel that match the specified identifier",
+        "operationId": "GET_depot-channels-origin-channel-pkgs-pkg"
+      },
+      "parameters": [
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Returns a package",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "checksum": "7a998b6a756f7ca769ac75edf66c119d14aa911d7cfb5fd91ad3ff21ddf0d257",
+                    "config": "",
+                    "deps": [
+                      {
+                        "name": "glibc",
+                        "origin": "core",
+                        "release": "20160612063629",
+                        "version": "2.22"
+                      }
+                    ],
+                    "exposes": [],
+                    "ident": {
+                      "name": "tree",
+                      "origin": "core",
+                      "release": "20161102210957",
+                      "version": "1.7.0"
+                    },
+                    "manifest": "# core / tree\n\n\n* __Maintainer__: The Habitat Maintainers <humans@habitat.sh>\n* __Version__: 1.7.0\n* __Release__: 20161102210957\n* __Architecture__: x86_64\n* __System__: linux\n* __Target__: x86_64-linux\n* __Upstream URL__: upstream project's website or home page is not defined\n* __License__: gplv2+ \n* __Source__: [http://mama.indstate.edu/users/ice/tree/src/tree-1.7.0.tgz](http://mama.indstate.edu/users/ice/tree/src/tree-1.7.0.tgz)\n* __SHA__: `6957c20e82561ac4231638996e74f4cfa4e6faabc5a2f511f0b4e3940e8f7b12`\n* __Path__: `/hab/pkgs/core/tree/1.7.0/20161102210957`\n* __Build Dependencies__: `core/make core/gcc `\n* __Dependencies__: `core/glibc `\n* __Interpreters__: no interpreters or undefined\n\n# Plan\n\n## Build Flags\n\n```bash\nCFLAGS: -I/hab/pkgs/core/glibc/2.22/20160612063629/include -I/hab/pkgs/core/make/4.2.1/20161102154828/include -I/hab/pkgs/core/gcc/5.2.0/20161031031637/include\nCPPFLAGS: -I/hab/pkgs/core/glibc/2.22/20160612063629/include -I/hab/pkgs/core/make/4.2.1/20161102154828/include -I/hab/pkgs/core/gcc/5.2.0/20161031031637/include\nCXXFLAGS: -I/hab/pkgs/core/glibc/2.22/20160612063629/include -I/hab/pkgs/core/make/4.2.1/20161102154828/include -I/hab/pkgs/core/gcc/5.2.0/20161031031637/include\nLDFLAGS: -L/hab/pkgs/core/glibc/2.22/20160612063629/lib -L/hab/pkgs/core/gcc/5.2.0/20161031031637/lib\nLD_RUN_PATH: /hab/pkgs/core/tree/1.7.0/20161102210957/lib:/hab/pkgs/core/glibc/2.22/20160612063629/lib\n```\n\n## Plan Source\n\n```bash\npkg_name=tree\npkg_origin=core\npkg_version=1.7.0\npkg_maintainer=\"The Habitat Maintainers <humans@habitat.sh>\"\npkg_license=('gplv2+')\npkg_source=http://mama.indstate.edu/users/ice/tree/src/tree-${pkg_version}.tgz\npkg_shasum=6957c20e82561ac4231638996e74f4cfa4e6faabc5a2f511f0b4e3940e8f7b12\npkg_deps=(core/glibc)\npkg_build_deps=(core/make core/gcc)\npkg_bin_dirs=(bin)\npkg_include_dirs=(include)\npkg_lib_dirs=(lib)\n\ndo_build() {\n  make\n}\n\ndo_install() {\n  sed -i \"s#prefix = /usr#prefix = ${pkg_prefix}#\" Makefile\n  make install\n}\n```",
+                    "tdeps": [
+                      {
+                        "name": "glibc",
+                        "origin": "core",
+                        "release": "20160612063629",
+                        "version": "2.22"
+                      },
+                      {
+                        "name": "linux-headers",
+                        "origin": "core",
+                        "release": "20160612063537",
+                        "version": "4.3"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or channel or identifier not supplied"
+          },
+          "404": {
+            "description": "Origin or channel does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get the latest version of the package in this channel that matches the specified identifier",
+        "operationId": "GET_depot-channels-origin-channel-pkgs-pkg-latest"
+      },
+      "parameters": [
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}/{version}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved a complete list of packages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdentList"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Retrieved list of packages - pagination required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdentList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or channel or identifier or version not supplied"
+          },
+          "404": {
+            "description": "Origin or channel does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "List all packages in a channel that match the specified identifier and version",
+        "operationId": "GET_depot-channels-origin-channel-pkgs-pkg-version"
+      },
+      "parameters": [
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}/{version}/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Retrieved a complete list of packages",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdentList"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Retrieved list of packages - pagination required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdentList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or channel or identifier or version not supplied"
+          },
+          "404": {
+            "description": "Origin or channel does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get the latest version of the package in this channel that matches the specified identifier and version",
+        "operationId": "GET_depot-channels-origin-channel-pkgs-pkg-version-latest"
+      },
+      "parameters": [
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}/{version}/{release}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Returns a package",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/packageIdent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Origin or channel or identifier or version or release not supplied"
+          },
+          "404": {
+            "description": "Origin or channel does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Get the package in a channel that matches the specified identifier, version and release",
+        "operationId": "GET_depot-channels-origin-channel-pkgs-pkg-version-release"
+      },
+      "parameters": [
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}/{version}/{release}/promote": {
+      "put": {
+        "responses": {
+          "200": {
+            "description": "Package successfully promoted"
+          },
+          "400": {
+            "description": "Origin or channel or identifier or version or release not supplied"
+          },
+          "404": {
+            "description": "Origin or channel or identifier or version or release does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Promote a package to a specific channel",
+        "operationId": "PUT_depot-channels-origin-channel-pkgs-pkg-version-release-promote"
+      },
+      "parameters": [
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/depot/channels/{origin}/{channel}/pkgs/{pkg}/{version}/{release}/demote": {
+      "put": {
+        "responses": {
+          "200": {
+            "description": "Package successfully demoted"
+          },
+          "400": {
+            "description": "Origin or channel or identifier or version or release not supplied"
+          },
+          "403": {
+            "description": "Attempting to demote from unstable is not supported"
+          },
+          "404": {
+            "description": "Origin or channel or identifier or version or release does not exist"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Demote a package from a specific channel",
+        "operationId": "PUT_depot-channels-origin-channel-pkgs-pkg-version-release-demote"
+      },
+      "parameters": [
+        {
+          "name": "release",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "pkg",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "channel",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/settings/{origin}/{name}": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Create successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1234567890,
+                  "origin": "xyz",
+                  "name": "abc",
+                  "visibility": "private",
+                  "owner_id": 77730215748435970,
+                  "created_at": "2017-05-05 00:42:35.213765+00",
+                  "updated_at": "2017-05-05 00:42:35.213765+00"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageSettings"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "403": {
+            "description": "Unauthorized to perform this action"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Create new package settings entry",
+        "operationId": "POST_settings-origin-name",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Returns package settings",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1234567890,
+                  "origin": "xyz",
+                  "name": "abc",
+                  "visibility": "private",
+                  "owner_id": 77730215748435970,
+                  "created_at": "2017-05-05 00:42:35.213765+00",
+                  "updated_at": "2017-05-05 00:42:35.213765+00"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageSettings"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "403": {
+            "description": "Unauthorized to perform this action"
+          },
+          "500": {
+            "description": "Internal server erro"
+          }
+        },
+        "description": "Get package settings for top level package",
+        "operationId": "GET_settings-origin-name",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "put": {
+        "responses": {
+          "200": {
+            "description": "Update successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 1234567890,
+                  "origin": "xyz",
+                  "name": "abc",
+                  "visibility": "private",
+                  "owner_id": 77730215748435970,
+                  "created_at": "2017-05-05 00:42:35.213765+00",
+                  "updated_at": "2017-05-05 00:42:35.213765+00"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/packageSettings"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "403": {
+            "description": "Unauthorized to perform this action"
+          },
+          "422": {
+            "description": "Invalid or missing visibility in body"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Update a package settings entry",
+        "operationId": "PUT_settings-origin-name",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "visibility": "private"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/packageSettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Package settings deleted"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "403": {
+            "description": "Unauthorized to perform this action"
+          },
+          "409": {
+            "description": "Conflict, Not deletable"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "description": "Delete a package settings entry",
+        "operationId": "DELETE_settings-origin-name",
+        "security": [
+          {
+            "oauth_2_0": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "origin",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "accountToken": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "account_id": {
+            "type": "integer"
+          },
+          "token": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "account_id",
+          "token"
+        ],
+        "type": "object"
+      },
+      "accountTokens": {
+        "properties": {
+          "accountTokens": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/accountToken"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "channelWithPromotion": {
+        "properties": {
+          "channel": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "promoted_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "channel"
+        ],
+        "type": "object"
+      },
+      "channelWithPromotionList": {
+        "properties": {
+          "channelWithPromotionList": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/channelWithPromotion"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "content": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "sha": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "html_url": {
+            "type": "string"
+          },
+          "git_url": {
+            "type": "string"
+          },
+          "download_url": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "encoding": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "path",
+          "sha",
+          "size",
+          "html_url",
+          "git_url",
+          "download_url",
+          "content",
+          "encoding"
+        ],
+        "type": "object"
+      },
+      "event": {
+        "properties": {
+          "operation": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "package_ident": {
+            "$ref": "#/components/schemas/packageIdent"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "operation",
+          "origin",
+          "channel",
+          "package_ident"
+        ],
+        "type": "object"
+      },
+      "events": {
+        "properties": {
+          "events": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/event"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "integrationList": {
+        "properties": {
+          "names": {
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "job": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "release": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "Complete",
+              "Dispatched",
+              "Failed",
+              "Pending",
+              "Processing",
+              "Rejected"
+            ],
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "build_started_at": {
+            "type": "string"
+          },
+          "build_finished_at": {
+            "type": "string"
+          },
+          "error": {
+            "$ref": "#/components/schemas/netError"
+          }
+        },
+        "required": [
+          "id",
+          "origin",
+          "name",
+          "version",
+          "release",
+          "state"
+        ],
+        "type": "object"
+      },
+      "jobs": {
+        "properties": {
+          "jobs": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/job"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "jobCreate": {
+        "properties": {
+          "project_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project_id"
+        ],
+        "type": "object"
+      },
+      "jobGroup": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "state",
+          "project",
+          "target"
+        ],
+        "type": "object"
+      },
+      "jobGroups": {
+        "properties": {
+          "jobGroups": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/jobGroup"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "jobLog": {
+        "properties": {
+          "start": {
+            "description": "The zero-indexed line number (inclusive) of the first line of log output in `content`.",
+            "type": "integer"
+          },
+          "stop": {
+            "description": "The zero-indexed line number (exclusive) of the last line of log output in `content`. Pass this number as the `start` query parameter on your next log request to retrieve the next portion of the log.",
+            "type": "integer"
+          },
+          "content": {
+            "description": "A subset of the log output, presented as individual lines. Trailing newline characters are not present. May be empty.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_complete": {
+            "description": "Indicates whether the job log is complete; i.e. additional polling for new lines is not required. Note that a job itself may be complete (i.e., finished running) but the log may not, as log processing is decoupled from build processing.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "start",
+          "stop",
+          "content",
+          "is_complete"
+        ],
+        "type": "object"
+      },
+      "memberRole": {
+        "properties": {
+          "role": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "type": "object"
+      },
+      "netError": {
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "msg": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "msg"
+        ],
+        "type": "object"
+      },
+      "origin": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "owner_id": {
+            "type": "integer"
+          },
+          "default_package_visibility": {
+            "enum": [
+              "Public",
+              "Private"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "owner_id"
+        ],
+        "type": "object"
+      },
+      "originIntegration": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "integration": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "origin",
+          "integration",
+          "name",
+          "body"
+        ],
+        "type": "object"
+      },
+      "originInvitation": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "account_id": {
+            "type": "integer"
+          },
+          "account_name": {
+            "type": "string"
+          },
+          "owner_id": {
+            "type": "integer"
+          },
+          "ignored": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "origin",
+          "account_id",
+          "account_name",
+          "owner_id",
+          "ignored"
+        ],
+        "type": "object"
+      },
+      "originInvitationList": {
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "members": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/originInvitation"
+            }
+          }
+        },
+        "required": [
+          "origin"
+        ],
+        "type": "object"
+      },
+      "originKey": {
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "origin",
+          "revision",
+          "location"
+        ],
+        "type": "object"
+      },
+      "originKeys": {
+        "properties": {
+          "originKeys": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/originKey"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "originMemberList": {
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "members": {
+            "$ref": "#/components/schemas/stringList"
+          }
+        },
+        "required": [
+          "origin"
+        ],
+        "type": "object"
+      },
+      "originPackageVersion": {
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "release_count": {
+            "type": "integer"
+          },
+          "latest": {
+            "type": "string"
+          },
+          "platforms": {
+            "$ref": "#/components/schemas/stringList"
+          },
+          "visibility": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "origin",
+          "name",
+          "version",
+          "release_count",
+          "latest",
+          "platforms",
+          "visibility"
+        ],
+        "type": "object"
+      },
+      "originPackageVersions": {
+        "properties": {
+          "originPackageVersions": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/originPackageVersion"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "originSecret": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "origin_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "origin_id",
+          "name",
+          "value"
+        ],
+        "type": "object"
+      },
+      "originSecrets": {
+        "properties": {
+          "originSecrets": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/originSecret"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "package": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "owner_id": {
+            "type": "integer"
+          },
+          "ident": {
+            "$ref": "#/components/schemas/packageIdent"
+          }
+        },
+        "required": [
+          "id",
+          "owner_id",
+          "ident"
+        ],
+        "type": "object"
+      },
+      "packageIdent": {
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "release": {
+            "type": "string"
+          },
+          "channels": {
+            "$ref": "#/components/schemas/stringList"
+          },
+          "platforms": {
+            "$ref": "#/components/schemas/stringList"
+          }
+        },
+        "required": [
+          "origin",
+          "name"
+        ],
+        "type": "object"
+      },
+      "packageIdentList": {
+        "properties": {
+          "packageList": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/packageIdent"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "packageList": {
+        "properties": {
+          "packageList": {
+            "uniqueItems": true,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/package"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "packageSettings": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string"
+          },
+          "owner_id": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "origin",
+          "name",
+          "visibility",
+          "owner_id"
+        ],
+        "type": "object"
+      },
+      "packageSettingsUpdate": {
+        "properties": {
+          "visibility": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "visibility"
+        ],
+        "type": "object"
+      },
+      "project": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "plan_path": {
+            "type": "string"
+          },
+          "vcs": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "url"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "plan_path",
+          "vcs"
+        ],
+        "type": "object"
+      },
+      "projectCreate": {
+        "properties": {
+          "origin": {
+            "type": "string"
+          },
+          "plan_path": {
+            "type": "string"
+          },
+          "github": {
+            "type": "object",
+            "properties": {
+              "organization": {
+                "type": "string"
+              },
+              "repo": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "organization",
+              "repo"
+            ]
+          }
+        },
+        "required": [
+          "origin",
+          "plan_path",
+          "github"
+        ],
+        "type": "object"
+      },
+      "projectIntegration": {
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "project_id": {
+            "type": "integer"
+          },
+          "integration_id": {
+            "type": "integer"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "project_id",
+          "integration_id",
+          "origin",
+          "body"
+        ],
+        "type": "object"
+      },
+      "projectUpdate": {
+        "properties": {
+          "plan_path": {
+            "type": "string"
+          },
+          "github": {
+            "type": "object",
+            "properties": {
+              "organization": {
+                "type": "string"
+              },
+              "repo": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "organization",
+              "repo"
+            ]
+          }
+        },
+        "required": [
+          "plan_path",
+          "github"
+        ],
+        "type": "object"
+      },
+      "secret_key": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "origin_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "owner_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "origin_id",
+          "name",
+          "revision",
+          "body",
+          "owner_id"
+        ],
+        "type": "object"
+      },
+      "session": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "flags": {
+            "type": "string"
+          },
+          "oauth_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "token",
+          "flags",
+          "oauth_token"
+        ],
+        "type": "object"
+      },
+      "stringList": {
+        "properties": {
+          "entries": {
+            "uniqueItems": false,
+            "minItems": 0,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "userProfile": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email"
+        ],
+        "type": "object"
+      },
+      "userProfileUpdate": {
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "type": "object"
+      }
+    },
+    "responses": {},
+    "parameters": {},
+    "examples": {},
+    "requestBodies": {},
+    "headers": {},
+    "securitySchemes": {
+      "oauth_2_0": {
+        "description": "Builder supports OAuth 2.0 for authenticating all API requests.",
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://{rootUri}/oauth2/authorize",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "links": {},
+    "callbacks": {}
+  }
+}
