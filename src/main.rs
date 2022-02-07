@@ -33,9 +33,6 @@ fn main() {
         for (code, resp_obj) in responses.iter() {
             println!("\tResponse code {}", code);
         }       
-//        if 0 == path_index {
-//            println!("{}", serde_json::to_string_pretty(&path_obj).unwrap());
-//        }
         path_index = path_index + 1;
     }
 }
