@@ -47,6 +47,7 @@
         }
       ],
       "get": {
+        "description": "Authenticates a user and creates a session",
         "responses": {
           "200": {
             "description": "",
@@ -291,6 +292,7 @@
         }
       },
       "head": {
+        "description": "Returns the health of the service",
         "responses": {
           "200": {
             "description": "Service is healthy"
@@ -365,9 +367,10 @@
         }
       ],
       "get": {
+        "description": "Get content from github",
         "responses": {
           "200": {
-            "description": "Get content from github",
+            "description": "Got content from github",
             "content": {
               "application/json": {
                 "schema": {
@@ -3253,6 +3256,7 @@
         }
       },
       "delete": {
+        "description": "Package release deleted",
         "responses": {
           "204": {
             "description": "Package release deleted"
